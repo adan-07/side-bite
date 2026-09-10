@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side Bite 🍔 | Admin Control Center</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f3f4f6; color: #1f2937; min-height: 100vh; }
+        
+        .admin-header { background-color: #111827; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo h1 { font-size: 1.4rem; margin: 0; }
+        .tagline { font-size: 0.8rem; color: #9ca3af; }
+
+        /* Dashboard Hub Menu Layout */
+        .hub-container { max-width: 800px; margin: 40px auto; padding: 20px; text-align: center; }
+        .hub-title { font-size: 2.2rem; font-weight: 700; color: #111827; margin-bottom: 5px; }
+        .hub-subtitle { font-size: 1rem; color: #4b5563; margin-bottom: 30px; }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hub-btn {
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            padding: 16px 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1f2937;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        .hub-btn:hover {
+            background: #e5e7eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Detail Views Styling */
+        .view-section { display: none; padding: 20px; max-width: 1100px; margin: 0 auto; }
+        .view-section.active { display: block; }
+        
+        .back-nav-btn {
+            background: #374151;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-nav-btn:hover { background: #111827; }
+
+        /* Mobile Friendly Top Tabs inside Views */
+        .module-tab-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .module-tab-btn {
+            padding: 8px 16px;
+            background: #e5e7eb;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .module-tab-btn.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* Existing Analytics & UI Components */
+        .stats-bar { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .stat-card { background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #e5e7eb; flex: 1; min-width: 140px; text-align: center; }
+        .stat-value { font-size: 1.3rem; font-weight: bold; color: #1d3557; margin-top: 5px; }
+        
+        .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; background: #fff; padding: 12px; border-radius: 8px; border: 1px solid #e5e7eb; }
+        .filter-btn { background: #f3f4f6; border: 1px solid #d1d5db; padding: 8px 14px; border-radius: 20px; font-weight: bold; cursor: pointer; color: #374151; font-size: 0.85rem; }
+        .filter-btn.active { background: #111827; color: #fff; border-color: #111827; }
+
+        .inventory-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; }
+        .form-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 20px; max-width: 550px; margin: 0 auto; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
+        .form-control { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; font-size: 0.95rem; box-sizing: border-box; }
+        .submit-btn { width: 100%; background: #10b981; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: bold; font-size: 1rem; cursor: pointer; }
+
+        /* Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 200; overflow-y: auto; padding: 20px; }
+        .modal-content { background: #fff; padding: 24px; border-radius: 10px; width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; }
+        .step-badge { display: inline-block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; background: #e2e8f0; color: #334155; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; }
+        .btn-action { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: bold; }
+        .btn-edit { background: #10b981; color: white; }
+        .btn-delete { background: #ef4444; color: white; }
+
+        .pos-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .btn-qty { width: 28px; height: 28px; border: 1px solid #cbd5e1; background: #e2e8f0; font-weight: bold; border-radius: 4px; cursor: pointer; }
+        .btn-discount-preset { background: #e2e8f0; border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn-discount-preset:hover { background: #cbd5e1; }
+        .cart-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+
+        /* Mobile Specific Overrides */
+        @media (max-width: 640px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .hub-btn { font-size: 1rem; padding: 18px 10px; }
+            #grid-exit-btn { grid-column: span 1 !important; }
+        }
+
+        /* FIXED THERMAL PRINTING STYLES */
+        @media print {
+            body {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .admin-header, .hub-container, .view-section, .no-print, .modal:not(#print-receipt-modal) {
+                display: none !important;
+            }
+            #print-receipt-modal {
+                display: block !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: auto !important;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #print-receipt-modal .modal-content {
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                max-width: 100% !important;
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            #printable-receipt-area {
+                display: block !important;
+                width: 78mm !important;
+                margin: 0 auto !important;
+                padding: 5px !important;
+                background: #fff !important;
+                color: #000 !important;
+                font-family: 'Courier New', Courier, monospace !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Navigation Header -->
+    <header class="navbar admin-header">
+        <div class="logo">
+            <h1>Side Bite 🍔 Admin 🛠️</h1>
+            <span class="tagline">Control Panel & POS Terminal</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button id="logout-btn" style="background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; cursor: pointer;">
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN DASHBOARD HUB VIEW -->
+    <div id="hub-view" class="hub-container">
+        <h2 class="hub-title">Side Bite 🍔</h2>
+        <p class="hub-subtitle">Welcome admin </p>
+
+        <div class="dashboard-grid">
+            <button class="hub-btn" onclick="openAdminView('orders-view')">📦 Order Management</button>
+            <button class="hub-btn" onclick="openAdminView('billing-view')">🧾 Billing Management</button>
+            
+            <button class="hub-btn" onclick="openAdminView('financials-view')">📊 Reports & Financials</button>
+            <button class="hub-btn" onclick="openAdminView('menu-view')">🍕 Menu Management</button>
+            
+            <button class="hub-btn" onclick="openAdminView('add-item-view')">➕ Add New Menu Item</button>
+            <button class="hub-btn" onclick="openAdminView('khata-view')">📖 Customer Details (Khata)</button>
+            
+            <button class="hub-btn" id="grid-exit-btn" style="grid-column: span 2; background: #fee2e2; color: #991b1b; border-color: #fca5a5;">Exit Dashboard</button>
+        </div>
+    </div>
+
+    <!-- 1. ORDER MANAGEMENT VIEW -->
+    <div id="orders-view" class="view-section">
+        <button class="back-nav-btn" onclick="showDashboardHub()">⬅️ Back to Main Dashboard</button>
+        
+        <div class="module-tab-bar">
+            <button class="module-tab-btn active">📦 Order Management</button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card" style="max-width: 200px;">
+                <small style="color: #666;">Active Orders</small>
+                <div class="stat-value" id="stat-active-count">0</div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All Orders</button>
+            <button class="filter-btn" data-filter="active">⚡ Active (In Progress)</button>
+            <button class="filter-btn" data-filter="pending">⏳ Pending</button>
+            <button class="filter-btn" data-filter="preparing">👨‍🍳 Preparing</button>
+            <button class="filter-btn" data-filter="ready">✅ Ready</button>
+            <button class="filter-btn" data-filter="completed">🎉 Completed</button>
+            <button class="filter-btn" data-filter="cancelled">❌ Cancelled</button>
+        </div>
+
+        <div id="admin-orders-container">
+            <p>Loading real-time orders...</p>
+        </div>
+    </div>
+
+    <!-- 2. BILLING MANAGEMENT VIEW -->
+    <div id="billing-view" class="view-section">
+        <button class="back-nav-btn" onclick="showDashboardHub()">⬅️ Back to Main Dashboard</button>
+        
+        <div class="module-tab-bar">
+            <button class="module-tab-btn active">🧾 Billing Management</button>
+        </div>
+
+        <div class="inventory-card">
+            <h3>🧾 Billing & Cashier Terminal</h3>
+            <p style="margin: 5px 0 15px 0; color: #6b7280; font-size: 0.85rem;">Modify unpaid tickets, apply discounts, and generate bills.</p>
+            
+            <div id="admin-billing-container">
+                <p style="color: #666;">Loading billing records...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. REPORTS & FINANCIALS VIEW -->
+    <div id="financials-view" class="view-section">
+        <button class="back-nav-btn" onclick="showDashboardHub()">⬅️ Back to Main Dashboard</button>
+
+        <div class="module-tab-bar">
+            <button class="module-tab-btn active">📊 Reports & Financials</button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <small style="color: #666;">Total Net Sales</small>
+                <div class="stat-value" style="color: #10b981;">PKR <span id="stat-total-revenue">0</span></div>
+            </div>
+            <div class="stat-card">
+                <small style="color: #666;">💵 Cash in Hand</small>
+                <div class="stat-value" style="color: #059669;">PKR <span id="stat-cash-revenue">0</span></div>
+            </div>
+            <div class="stat-card">
+                <small style="color: #666;">💳 Online / Card</small>
+                <div class="stat-value" style="color: #2563eb;">PKR <span id="stat-online-revenue">0</span></div>
+            </div>
+            <div class="stat-card" style="border-color: #f59e0b; background: #fffbeb;">
+                <small style="color: #b45309; font-weight: bold;">📖 Pending Loan</small>
+                <div class="stat-value" style="color: #d97706;">PKR <span id="stat-loan-balance">0</span></div>
+            </div>
+        </div>
+
+        <div class="inventory-card">
+            <h3>📊 Sales & Financial Summary</h3>
+            <p style="margin: 5px 0 15px 0; color: #6b7280; font-size: 0.85rem;">Overall revenue breakdown across cash, card, and pending loans.</p>
+            <div id="admin-financials-summary"></div>
+        </div>
+    </div>
+
+    <!-- 4. KHATA / CUSTOMER DETAILS VIEW -->
+    <div id="khata-view" class="view-section">
+        <button class="back-nav-btn" onclick="showDashboardHub()">⬅️ Back to Main Dashboard</button>
+        <div class="inventory-card">
+            <h3 style="margin: 0 0 10px 0; color: #92400e;">📖 Customer Credit Ledger (Loan Record)</h3>
+            <p style="margin: 0 0 15px 0; color: #6b7280; font-size: 0.85rem;">Unpaid and credit orders requiring payment settlement.</p>
+            <div id="admin-khata-container">
+                <p style="color: #666;">Loading Khata records...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. MENU MANAGEMENT VIEW -->
+    <div id="menu-view" class="view-section">
+        <button class="back-nav-btn" onclick="showDashboardHub()">⬅️ Back to Main Dashboard</button>
+        <div class="inventory-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+                <div>
+                    <h3 style="margin: 0;">Menu Inventory & Availability</h3>
+                    <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 0.85rem;">Toggle stock status or remove items from live menu.</p>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="openAdminView('add-item-view')" style="background: #10b981; color: white; border: none; padding: 8px 14px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.85rem;">
+                        ➕ Add New Item
+                    </button>
+                    <button onclick="window.seedMenu && window.seedMenu()" style="background: #3b82f6; color: white; border: none; padding: 8px 14px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.85rem;">
+                        🔄 Re-Sync Default Menu
+                    </button>
+                </div>
+            </div>
+            <div id="admin-inventory-list">
+                <p style="color: #666;">Loading inventory items...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. ADD ITEM VIEW -->
+    <div id="add-item-view" class="view-section">
+        <button class="back-nav-btn" onclick="openAdminView('menu-view')">⬅️ Back to Menu Management</button>
+        <div class="form-card">
+            <h3 style="margin-bottom: 5px;">Add New Menu Item</h3>
+            <p class="guide-text" style="margin-bottom: 15px; color: #64748b; font-size: 0.85rem;">Fill details below to show new food item on customer menu.</p>
+            <form id="add-item-form">
+                <div class="form-group">
+                    <label for="new-item-name">Item Name</label>
+                    <input type="text" id="new-item-name" class="form-control" placeholder="e.g. Zinger Supreme Burger" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-item-category">Category</label>
+                    <select id="new-item-category" class="form-control" required>
+                        <option value="Burgers">Burgers</option>
+                        <option value="Pizza">Pizza</option>
+                        <option value="Sides">Sides</option>
+                        <option value="Beverages">Beverages</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="new-item-price">Price (PKR)</label>
+                    <input type="number" id="new-item-price" class="form-control" placeholder="450" min="1" required>
+                </div>
+                <button type="submit" id="save-item-btn" class="submit-btn">Save Item to Menu</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- EDIT ORDER MODAL (POS) -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="margin: 0; color: #1e293b; font-size: 1.3rem;">🛠️ Edit Order & Billing (POS)</h3>
+                <p style="margin: 4px 0 0 0; color: #64748b; font-size: 0.85rem;">Update customer info, add menu items, add custom extra charges, tax, or discounts.</p>
+            </div>
+
+            <!-- STEP 1: CUSTOMER INFO & PAYMENT STATUS -->
+            <div class="pos-section">
+                <span class="step-badge">STEP 1: CUSTOMER & PAYMENT STATUS</span>
+                
+                <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Customer Name</label>
+                        <input type="text" id="edit-customer-name" class="form-control" placeholder="Customer Name">
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Phone Number</label>
+                        <input type="text" id="edit-customer-phone" class="form-control" placeholder="Phone Number">
+                        <small style="color: #ef4444; font-size: 0.75rem;">⚠️ Mandatory for Loan (Khata)</small>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 140px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Order Status</label>
+                        <select id="edit-status-select" class="form-control">
+                            <option value="Pending">🟡 Pending</option>
+                            <option value="Preparing">🟠 Preparing</option>
+                            <option value="Ready">🟢 Ready</option>
+                            <option value="Completed">🔵 Completed</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 140px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Payment Status</label>
+                        <select id="edit-payment-status" class="form-control">
+                            <option value="Unpaid">🔴 Unpaid</option>
+                            <option value="Paid">🟢 Paid</option>
+                            <option value="Loan">📖 Loan (Khata)</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 140px;">
+                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Payment Method</label>
+                        <select id="edit-payment-method" class="form-control">
+                            <option value="Cash">💵 Cash</option>
+                            <option value="Online">💳 Online / Card</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: MANAGE CART ITEMS & EXTRAS -->
+            <div class="pos-section">
+                <span class="step-badge">STEP 2: MANAGE CART ITEMS & EXTRA CHARGES</span>
+                
+                <div id="edit-cart-list" style="margin-bottom: 12px;"></div>
+
+                <div style="border: 1px dashed #3b82f6; background: #eff6ff; padding: 10px; border-radius: 6px; margin-bottom: 10px; display: flex; gap: 8px;">
+                    <select id="edit-add-item-select" class="form-control" style="flex: 1;">
+                        <option value="">+ Add Extra Item (e.g. 1 Coffee)</option>
+                    </select>
+                    <button id="btn-add-menu-item" style="background: #2563eb; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap;">+ Add Item</button>
+                </div>
+
+                <div style="border: 1px dashed #10b981; background: #ecfdf5; padding: 10px; border-radius: 6px; display: flex; gap: 8px; flex-wrap: wrap;">
+                    <input type="text" id="edit-custom-extra-name" class="form-control" placeholder="Extra Item Name (e.g. Packing / Extra Cheese)" style="flex: 2; min-width: 180px;">
+                    <input type="number" id="edit-custom-extra-price" class="form-control" placeholder="Amount (PKR)" min="0" style="flex: 1; min-width: 100px;">
+                    <button id="btn-add-custom-extra" style="background: #059669; color: white; border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap;">+ Add Extra</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: TAX & SERVICE CHARGES -->
+            <div class="pos-section" style="background: #fffbeb; border-color: #fef3c7;">
+                <span class="step-badge" style="background: #fef3c7; color: #92400e;">STEP 3: TAX & SERVICE CHARGES</span>
+                
+                <div style="display: flex; gap: 10px;">
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Sales Tax / GST (%)</label>
+                        <input type="number" id="edit-tax-rate" class="form-control" value="0" min="0" max="100">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px;">Service / Delivery Fee (PKR)</label>
+                        <input type="number" id="edit-service-fee" class="form-control" value="0" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4: APPLY DISCOUNT -->
+            <div class="pos-section" style="background: #fdf2f8; border-color: #fce7f3;">
+                <span class="step-badge" style="background: #fce7f3; color: #9d174d;">STEP 4: APPLY DISCOUNT</span>
+                
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <input type="number" id="edit-discount-value" class="form-control" value="0" min="0" style="width: 100px;">
+                    <select id="edit-discount-type" class="form-control" style="width: 110px;">
+                        <option value="percent">% Off</option>
+                        <option value="fixed">PKR Off</option>
+                    </select>
+                    <div style="display: flex; gap: 5px;">
+                        <button type="button" class="btn-discount-preset" onclick="setPresetDiscount(5)">5%</button>
+                        <button type="button" class="btn-discount-preset" onclick="setPresetDiscount(10)">10%</button>
+                        <button type="button" class="btn-discount-preset" onclick="setPresetDiscount(15)">15%</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FINAL DYNAMIC TOTAL DISPLAY -->
+            <div style="background: #0f172a; color: #fff; padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <span style="font-size: 1.1rem; font-weight: bold;">Updated Final Total:</span>
+                <span style="font-size: 1.5rem; font-weight: 800; color: #34d399;">PKR <span id="edit-modal-final-total">0</span></span>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn-action" id="close-edit-btn" style="background: #cbd5e1; color: #334155;">Cancel</button>
+                <button class="btn-action btn-edit" id="save-edit-btn">💾 Save & Update Order</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancellation Reason Modal -->
+    <div id="cancel-reason-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <h3 style="margin-top: 0; color: #991b1b;">Cancel Order</h3>
+            <div class="form-group">
+                <select id="cancel-reason-select" class="form-control">
+                    <option value="Customer Changed Mind">Customer Changed Mind</option>
+                    <option value="Item Out of Stock">Item Out of Stock</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button class="btn-action" id="close-cancel-modal-btn">Close</button>
+                <button class="btn-action btn-delete" id="confirm-cancel-order-btn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- THERMAL PRINT RECEIPT CONTAINER -->
+    <div id="print-receipt-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div id="printable-receipt-area"></div>
+            <div style="margin-top: 15px; text-align: right;" class="no-print">
+                <button class="btn-action" onclick="document.getElementById('print-receipt-modal').style.display='none'">Close</button>
+                <button class="btn-action btn-edit" onclick="window.print()">🖨️ Print Receipt</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="js/admin.js"></script>
+    <script type="module" src="js/seed-menu.js"></script>
+    <script>
+        function openAdminView(viewId) {
+            document.getElementById('hub-view').style.display = 'none';
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            const targetView = document.getElementById(viewId);
+            if(targetView) {
+                targetView.classList.add('active');
+            }
+        }
+
+        function showDashboardHub() {
+            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById('hub-view').style.display = 'block';
+        }
+
+        function setPresetDiscount(percent) {
+            const discInput = document.getElementById('edit-discount-value');
+            const discType = document.getElementById('edit-discount-type');
+            if (discInput && discType) {
+                discInput.value = percent;
+                discType.value = 'percent';
+                discInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('grid-exit-btn')?.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+            
+            const closeEditBtn = document.getElementById('close-edit-btn');
+            if (closeEditBtn) {
+                closeEditBtn.addEventListener('click', () => {
+                    document.getElementById('edit-modal').style.display = 'none';
+                });
+            }
+
+            const closeCancelBtn = document.getElementById('close-cancel-modal-btn');
+            if (closeCancelBtn) {
+                closeCancelBtn.addEventListener('click', () => {
+                    document.getElementById('cancel-reason-modal').style.display = 'none';
+                });
+            }
+        });
+
+        window.openAdminView = openAdminView;
+        window.showDashboardHub = showDashboardHub;
+        window.setPresetDiscount = setPresetDiscount;
+    </script>
+</body>
+</html>

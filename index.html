@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side Bite 🍔 | Portal Selection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+        body {
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+        .portal-card {
+            background: #ffffff;
+            padding: 45px 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            max-width: 420px;
+            width: 100%;
+            border: 1px solid #e2e8f0;
+        }
+        .cafe-logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+        p {
+            color: #64748b;
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+        }
+        .portal-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 16px 20px;
+            margin-bottom: 14px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Customer Button - Primary Accent */
+        .btn-customer {
+            background: #1d3557;
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 14px rgba(29, 53, 87, 0.25);
+        }
+        .btn-customer:hover {
+            background: #152744;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(29, 53, 87, 0.35);
+        }
+        .btn-customer:active {
+            transform: translateY(0);
+        }
+
+        /* Admin Button - Outline Elegant */
+        .btn-admin {
+            background: #ffffff;
+            color: #334155;
+            border: 1.5px solid #cbd5e1;
+        }
+        .btn-admin:hover {
+            background: #f1f5f9;
+            border-color: #94a3b8;
+            color: #0f172a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+        }
+        .btn-admin:active {
+            transform: translateY(0);
+        }
+
+        .btn-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .arrow-icon {
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+        }
+        .portal-btn:hover .arrow-icon {
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-card">
+        <div class="cafe-logo">🍔</div>
+        <h1>Side Bite</h1>
+        <p>Choose your portal to continue</p>
+
+        <!-- Redirects to Menu Page -->
+        <a href="menu.html" class="portal-btn btn-customer">
+            <span class="btn-text">🛍️ Customer Panel</span>
+            <span class="arrow-icon">→</span>
+        </a>
+
+        <!-- Redirects to Admin Login Page -->
+        <a href="admin-login.html" class="portal-btn btn-admin">
+            <span class="btn-text">🔐 Admin Panel</span>
+            <span class="arrow-icon">→</span>
+        </a>
+    </div>
+
+</body>
+</html>

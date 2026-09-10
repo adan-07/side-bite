@@ -1,0 +1,379 @@
+/* Base Resets & Variables */
+:root {
+    --primary-color: #e63946;
+    --dark-bg: #1d3557;
+    --light-bg: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-color: #2b2d42;
+    --border-color: #e5e7eb;
+    --success-color: #10b981;
+    --soldout-color: #ef4444;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--text-color);
+    padding-bottom: 50px;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+/* Header / Navigation */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--dark-bg);
+    color: white;
+    padding: 12px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.logo h1 { 
+    font-size: 1.3rem; 
+    font-weight: 700;
+}
+.logo .tagline { 
+    font-size: 0.75rem; 
+    opacity: 0.8; 
+}
+
+.cart-btn {
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.88rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 4px rgba(230, 57, 70, 0.3);
+}
+
+/* Main Container */
+.container, .hub-container {
+    max-width: 1100px;
+    margin: 15px auto;
+    padding: 0 15px;
+    width: 100%;
+}
+
+.banner {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Search Bar Styling */
+.search-wrapper {
+    margin-bottom: 15px;
+}
+.search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 25px;
+    border: 1px solid var(--border-color);
+    outline: none;
+    font-size: 0.95rem;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Category & Admin Tab Filters (Horizontal Scroll on Mobile) */
+.category-filter, .filter-bar, .module-tab-bar {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 5px 2px 12px 2px;
+    margin-bottom: 15px;
+    scrollbar-width: none; /* Firefox */
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+.category-filter::-webkit-scrollbar, 
+.filter-bar::-webkit-scrollbar, 
+.module-tab-bar::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.filter-btn, .tab-btn {
+    border: 1px solid var(--border-color);
+    background: white;
+    padding: 8px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.filter-btn.active, .tab-btn.active {
+    background: var(--dark-bg);
+    color: white;
+    border-color: var(--dark-bg);
+}
+
+/* Menu Grid Layout */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 15px;
+}
+
+/* Menu Card & Floating Sold Out Badge */
+.menu-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    transition: transform 0.2s ease;
+    overflow: hidden;
+}
+
+.menu-card.out-of-stock {
+    background-color: #fafafa;
+}
+
+.menu-card.out-of-stock .card-title,
+.menu-card.out-of-stock .card-price {
+    color: #a1a1aa !important;
+}
+
+.stock-badge-soldout {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--soldout-color);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+}
+
+.card-title { 
+    font-size: 1.05rem; 
+    font-weight: 700;
+    margin-bottom: 4px; 
+    color: var(--text-color);
+}
+
+.card-category {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    color: #6b7280;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.card-price { 
+    font-weight: 700; 
+    color: var(--success-color); 
+    font-size: 1.1rem;
+}
+
+.add-btn {
+    background: var(--dark-bg);
+    color: white;
+    border: none;
+    padding: 11px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    width: 100%;
+    margin-top: 15px;
+    transition: background-color 0.2s ease;
+}
+
+.add-btn:active {
+    transform: scale(0.98);
+}
+
+.add-btn:disabled {
+    background: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed;
+}
+
+/* Global Table Mobile Scroll Wrapper */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+/* Grid Layouts for Admin Cards / Stats */
+.stats-grid, .reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* POS Layout Flex Wrapper */
+.pos-billing-wrapper {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.pos-billing-wrapper .table-section {
+    flex: 1;
+    min-width: 0; /* Prevents flex overflow */
+}
+
+.pos-billing-wrapper .receipt-section {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+/* Strict Mobile Optimization (< 768px) */
+@media (max-width: 768px) {
+    .container, .hub-container {
+        padding: 0 10px;
+        margin: 8px auto;
+    }
+
+    .navbar {
+        padding: 10px 12px;
+    }
+
+    .logo h1 {
+        font-size: 1.1rem;
+    }
+
+    .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    /* Wrap POS side-by-side layout into single column */
+    .pos-billing-wrapper {
+        flex-direction: column;
+    }
+
+    .pos-billing-wrapper .receipt-section {
+        width: 100%;
+    }
+
+    /* Wrap Inventory row items on mobile */
+    .inventory-item-row {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 10px;
+    }
+
+    .inventory-item-actions {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+    }
+
+    /* Order Action Buttons Wrap */
+    .order-actions-row {
+        flex-direction: column !important;
+        gap: 8px !important;
+    }
+    
+    .order-actions-row select, 
+    .order-actions-row button {
+        width: 100% !important;
+    }
+
+    .modal-content {
+        width: 95% !important;
+        max-height: 90vh !important;
+        padding: 15px !important;
+        overflow-y: auto !important;
+    }
+}
+
+/* PRINT-SPECIFIC OVERRIDES (Thermal Receipt Optimization) */
+@media print {
+    @page {
+        size: 80mm auto;
+        margin: 0;
+    }
+
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Hide UI elements on print */
+    .navbar, 
+    .back-nav-btn, 
+    .hub-container, 
+    .module-tab-bar, 
+    .stats-bar, 
+    .filter-bar, 
+    .modal, 
+    button, 
+    #logout-btn, 
+    #enable-sound-btn {
+        display: none !important;
+    }
+
+    .view-section {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    .inventory-card, .printable-receipt {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 5px !important;
+        width: 100% !important;
+    }
+
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 12px !important;
+    }
+
+    th, td {
+        padding: 4px 2px !important;
+        color: #000 !important;
+    }
+}

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Side Bite 🍔 | Order Status</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .status-card { max-width: 650px; margin: 40px auto; padding: 25px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .badge { padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 0.85rem; display: inline-block; }
+        .badge-pending { background: #fef3c7; color: #92400e; }
+        .badge-completed { background: #dcfce7; color: #166534; }
+        .badge-cancelled { background: #fee2e2; color: #991b1b; }
+        .item-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+        .action-btn { background: #1d3557; color: #fff; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; border: none; cursor: pointer; }
+    </style>
+</head>
+<body style="background: #f8fafc; font-family: sans-serif;">
+
+    <div class="status-card">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: #1d3557; margin-bottom: 5px;">Order Details 🎉</h2>
+            <p style="color: #64748b; font-size: 0.95rem;">Order ID: <strong id="order-id-val" style="font-family: monospace;">---</strong></p>
+            <span id="order-status-badge" class="badge badge-pending">Fetching...</span>
+        </div>
+
+        <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <div style="margin-bottom: 6px;"><strong>Customer:</strong> <span id="cust-name">-</span></div>
+            <div style="margin-bottom: 6px;"><strong>Table / Address:</strong> <span id="cust-table">-</span></div>
+            <div><strong>Payment Method:</strong> <span id="cust-payment">-</span></div>
+        </div>
+
+        <h3 style="margin-bottom: 10px; font-size: 1.1rem;">Items Ordered</h3>
+        <div id="order-items-container">Loading items...</div>
+
+        <div style="margin-top: 20px; text-align: right; font-size: 1.2rem; font-weight: bold; color: #e63946;">
+            Total Amount: PKR <span id="order-total-val">0</span>
+        </div>
+
+        <hr style="margin: 25px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+        <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <a id="back-menu-btn" href="menu.html" class="action-btn" style="background: #475569;">← Back to Menu</a>
+            <button id="add-items-btn" class="action-btn">+ Add More Items to Order</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from './js/firebase-config.js';
+        import { doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let orderId = urlParams.get('id') || localStorage.getItem('active_order_id');
+
+        if (orderId) {
+            document.getElementById('order-id-val').textContent = orderId;
+            localStorage.setItem('active_order_id', orderId);
+            
+            // Fixed: Redirect to menu.html instead of index.html
+            const backBtn = document.getElementById('back-menu-btn');
+            if (backBtn) backBtn.href = `menu.html?append_to=${orderId}`;
+
+            listenToOrderDetails(orderId);
+        } else {
+            document.getElementById('order-items-container').innerHTML = "<div style='color:#ef4444;'>Order ID missing in URL!</div>";
+            document.getElementById('order-status-badge').textContent = "Not Found";
+        }
+
+        function listenToOrderDetails(id) {
+            const docRef = doc(db, "orders", id);
+
+            onSnapshot(docRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('cust-name').textContent = data.customerName || data.name || 'N/A';
+                    document.getElementById('cust-table').textContent = data.tableNo || data.table || 'N/A';
+                    document.getElementById('cust-payment').textContent = data.paymentMethod || data.payment || 'N/A';
+                    document.getElementById('order-total-val').textContent = data.total || data.totalAmount || 0;
+
+                    const badge = document.getElementById('order-status-badge');
+                    const statusVal = data.status || 'Pending';
+                    badge.textContent = statusVal;
+                    badge.className = `badge badge-${statusVal.toLowerCase()}`;
+
+                    const container = document.getElementById('order-items-container');
+                    container.innerHTML = '';
+                    
+                    if (data.items && data.items.length > 0) {
+                        data.items.forEach(item => {
+                            const qty = Number(item.qty || item.quantity || 1);
+                            const price = Number(item.price || 0);
+                            container.innerHTML += `
+                                <div class="item-row">
+                                    <div>
+                                        <strong>${item.name || item.title}</strong> x ${qty}
+                                        ${item.notes ? `<div style="font-size:0.8rem; color:#64748b;">Note: ${item.notes}</div>` : ''}
+                                    </div>
+                                    <div>PKR ${price * qty}</div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        container.innerHTML = '<div>No items found in this order.</div>';
+                    }
+                } else {
+                    document.getElementById('order-items-container').innerHTML = "<div style='color:#ef4444;'>Order ID Firestore me exist nahi karti.</div>";
+                    document.getElementById('order-status-badge').textContent = "Not Found";
+                }
+            }, (err) => {
+                console.error("Firestore Listener Error:", err);
+                document.getElementById('order-items-container').innerHTML = `<div style='color:#ef4444;'>Error loading order details! Check console.</div>`;
+            });
+        }
+
+        // Fixed: Redirect to menu.html on Add Items click
+        document.getElementById('add-items-btn').addEventListener('click', () => {
+            if (orderId) {
+                window.location.href = `menu.html?append_to=${orderId}`;
+            } else {
+                window.location.href = 'menu.html';
+            }
+        });
+    </script>
+</body>
+</html>

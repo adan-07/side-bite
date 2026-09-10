@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Side Bite 🍔| Order Online</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        :root {
+            --primary-bg: #111827;
+            --accent-green: #10b981;
+            /* Glassmorphism Variables */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.06);
+        }
+
+        * { box-sizing: border-box; }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background: #f1f5f9; 
+            color: #1f2937; 
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--primary-bg);
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .filter-container { 
+            display: flex; 
+            gap: 8px; 
+            overflow-x: auto; 
+            padding: 4px 0 12px 0; 
+            margin-bottom: 12px; 
+            scrollbar-width: none; 
+            -webkit-overflow-scrolling: touch;
+        }
+        .filter-container::-webkit-scrollbar { display: none; }
+
+        .filter-btn { 
+            background: #e2e8f0; 
+            border: none; 
+            padding: 6px 14px; 
+            border-radius: 20px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            white-space: nowrap; 
+            color: #475569;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        .filter-btn.active { background: var(--primary-bg); color: #fff; }
+
+        .search-box { 
+            width: 100%; 
+            padding: 10px 14px; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 12px; 
+            margin-bottom: 12px; 
+            font-size: 0.88rem; 
+            outline: none;
+            background: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .search-box:focus { border-color: var(--primary-bg); }
+
+        /* Compact Grid for Mobile and Desktop */
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); 
+            gap: 12px; 
+        }
+
+        @media (max-width: 480px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 Compact cards per row on mobile */
+                gap: 10px;
+            }
+        }
+
+        /* Glass Effect & Rounded Cards (Compact Size) */
+        .menu-card { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border); 
+            border-radius: 20px; /* Rounded Edges */
+            padding: 12px; /* Choota Size / Compact Padding */
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            position: relative; 
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .menu-card:active {
+            transform: scale(0.98);
+        }
+
+        /* Styling inside Card for Dynamic JS injection */
+        .menu-card h3 {
+            font-size: 0.95rem !important;
+            margin: 0 0 4px 0 !important;
+            font-weight: 700;
+        }
+
+        .menu-card .category-tag {
+            font-size: 0.65rem !important;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+        }
+
+        .menu-card .price {
+            font-size: 0.95rem !important;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin: 8px 0 !important;
+        }
+
+        .menu-card button {
+            padding: 8px 10px !important;
+            font-size: 0.8rem !important;
+            border-radius: 12px !important;
+        }
+
+        .cart-icon-btn { 
+            position: relative; 
+            text-decoration: none; 
+            font-size: 1.2rem; 
+            background: #fff; 
+            padding: 5px 10px; 
+            border-radius: 50px; 
+            border: 1px solid #e2e8f0; 
+            display: flex;
+            align-items: center;
+        }
+        .cart-badge { 
+            position: absolute; 
+            top: -5px; 
+            right: -5px; 
+            background: #ef4444; 
+            color: white; 
+            border-radius: 50%; 
+            padding: 2px 5px; 
+            font-size: 0.7rem; 
+            font-weight: bold; 
+        }
+
+        .admin-link {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 5px 9px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .active-banner { 
+            background: rgba(239, 246, 255, 0.8); 
+            backdrop-filter: blur(8px);
+            border: 1px solid #bfdbfe; 
+            border-radius: 16px; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="navbar">
+        <div class="logo">
+            <h1 style="margin: 0; font-size: 1.2rem; font-weight: 800;">Side Bite 🍔</h1>
+            <span class="tagline" style="font-size: 0.7rem; color: #9ca3af;">Order Fresh & Fast</span>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <a href="admin-login.html" class="admin-link">⚙️ Admin</a>
+            <a href="cart.html" id="nav-cart-btn" class="cart-icon-btn">
+                🛒 <span id="cart-count" class="cart-badge">0</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 12px; max-width: 1100px; margin: 0 auto;">
+
+        <!-- Active Order Live Tracker Banner -->
+        <div id="active-order-banner" class="active-banner" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <div>
+                    <h4 style="margin: 0; color: #1e40af; font-size: 0.9rem;">Active Order Status <span id="banner-order-id">#0000</span></h4>
+                    <p style="margin: 2px 0 0 0; font-size: 0.8rem;">Status: <strong id="banner-order-status" style="text-transform: uppercase; color: #2563eb;">Pending</strong></p>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                    <button id="edit-order-btn" style="background: #3b82f6; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem;">Edit</button>
+                    <button id="cancel-order-btn" style="background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.75rem;">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Search Input -->
+        <input type="text" id="search-input" class="search-box" placeholder="🔍 Search burgers, drinks, pizza...">
+
+        <!-- Category Filters -->
+        <div class="filter-container" id="category-filters">
+            <button class="filter-btn active" data-category="All">All Items</button>
+            <button class="filter-btn" data-category="Burgers">Burgers</button>
+            <button class="filter-btn" data-category="Pizza">Pizza</button>
+            <button class="filter-btn" data-category="Sides">Sides</button>
+            <button class="filter-btn" data-category="Beverages">Beverages</button>
+        </div>
+
+        <!-- Menu Container Grid (Original ID kept for app.js) -->
+        <div class="menu-grid" id="menu-container">
+            <p style="color: #6b7280; text-align: center; grid-column: 1 / -1;">Loading menu items...</p>
+        </div>
+
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+    <script type="module">
+        const urlParams = new URLSearchParams(window.location.search);
+        let appendOrderId = urlParams.get('append_to') || localStorage.getItem('active_order_id');
+
+        if (appendOrderId) {
+            const cartBtn = document.getElementById('nav-cart-btn');
+            if (cartBtn) {
+                cartBtn.href = `cart.html?append_to=${appendOrderId}`;
+            }
+        }
+    </script>
+</body>
+</html>
